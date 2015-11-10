@@ -1,0 +1,19 @@
+{
+    "name": "jamieynonan/wp-image",
+    "description": "WpImage es una clase para trabajar con las imagenes en WordPress. Permite importar imagenes desde URL, copiar, mover imagenes existentes en el servidor y actualizar los datos de attachment.",
+    "type": "library",
+    "license": "GPL-2.0",
+    "authors": [
+        {
+            "name": "Jamie Ynoñan",
+            "email": "jamiea31@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "WpImage\\": "src/"
+        }
+    }
+}

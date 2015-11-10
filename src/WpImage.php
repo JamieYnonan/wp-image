@@ -1,6 +1,8 @@
 <?php
 namespace WpImage;
 
+use Helper\StringH;
+
 class WpImage
 {
     private $mimesExtensions = [
@@ -273,7 +275,7 @@ class WpImage
         if ($imgName === null ) {
             $imgName = str_replace('.'. $this->extension, '', $this->originBaseName);
         }
-        $this->onlyName = sanitize_file_name($imgName);
+        $this->onlyName = StringH::slug($imgName);
         $this->name = $this->onlyName . '.'. $this->extension;
     }
 

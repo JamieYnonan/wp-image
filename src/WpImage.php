@@ -34,7 +34,7 @@ class WpImage
     protected $postMetaId;
     protected $isThumnail = false;
 
-    public function __construct($image, $validateMime = null)
+    public function __construct($image, $validateMime = null, $sanitizeName = true)
     {
         $this->img = new \SplFileInfo($image);
         if (!isset(parse_url($image)['scheme'])) {
@@ -47,6 +47,7 @@ class WpImage
         }
 
         $this->validateImage($validateMime);
+        $this->setName(null, $sanitizeName);
     }
 
     /**
@@ -270,12 +271,14 @@ class WpImage
          return wp_mkdir_p($this->uploadDir);
     }
 
-    public function setName($imgName = null)
+    public function setName($imgName = null, $sanitizeName = true)
     {
         if ($imgName === null ) {
             $imgName = str_replace('.'. $this->extension, '', $this->originBaseName);
         }
-        $this->onlyName = StringH::slug($imgName);
+        $this->onlyName = ($sanitizeName === true)
+            ? StringH::slug($imgName)
+            : $imgName;
         $this->name = $this->onlyName . '.'. $this->extension;
     }
 
@@ -283,9 +286,6 @@ class WpImage
     {
         if ($this->uploadDir === null) {
             $this->setUploadDir();
-        }
-        if ($this->name === null) {
-            $this->setName();
         }
         $this->fullPath = $this->uploadDir . DIRECTORY_SEPARATOR . $this->name;
     }

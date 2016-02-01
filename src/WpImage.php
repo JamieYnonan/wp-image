@@ -224,7 +224,7 @@ class WpImage
         if ($this->imgBuffer === false) {
             throw new \Exception('error file_get_contents');
         }
-        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
         $mime = $finfo->buffer($this->imgBuffer);
         if (!in_array($imageSize['mime'], $this->mimeValidate)) {
             throw new \Exception('invalid mimetype');

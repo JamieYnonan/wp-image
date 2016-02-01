@@ -226,7 +226,7 @@ class WpImage
         }
         $finfo = new \finfo(FILEINFO_MIME_TYPE);
         $mime = $finfo->buffer($this->imgBuffer);
-        if (!in_array($imageSize['mime'], $this->mimeValidate)) {
+        if (!in_array($mime, $this->mimeValidate)) {
             throw new \Exception('invalid mimetype');
         }
         unset($finfo);

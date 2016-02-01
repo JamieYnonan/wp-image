@@ -22,8 +22,6 @@ class WpImage
     protected $originBaseName;
     protected $originPathName;
     protected $size;
-    protected $width;
-    protected $heigth;
     protected $name;
     protected $uploadDir;
     protected $onlyName;
@@ -33,17 +31,17 @@ class WpImage
     protected $postId;
     protected $postMetaId;
     protected $isThumnail = false;
+    private $imgBuffer;
 
     public function __construct($image, $validateMime = null, $sanitizeName = true)
     {
         $this->img = new \SplFileInfo($image);
+        $this->isUrl = true;
         if (!isset(parse_url($image)['scheme'])) {
             if ($this->img->isFile() === false) {
                 throw new \Exception('invalid image');
             }
             $this->isUrl = false;
-        } else {
-            $this->isUrl = true;
         }
 
         $this->validateImage($validateMime);
@@ -96,22 +94,6 @@ class WpImage
     public function getSize()
     {
         return $this->size;
-    }
-
-    /**
-     * @return width
-     */
-    public function getWidth()
-    {
-        return $this->width;
-    }
-
-    /**
-     * @return heigth
-     */
-    public function getHeigth()
-    {
-        return $this->heigth;
     }
 
     /**
@@ -238,18 +220,16 @@ class WpImage
 
     private function validateMimeType()
     {
-        $imageSize = getimagesize($this->originPathName);
-        if (!in_array($imageSize['mime'], $this->mimeValidate)) {
-            throw new \Exception('mimetype invalid');
+        $this->imgBuffer = file_get_contents($this->originPathName);
+        if ($this->imgBuffer === false) {
+            throw new \Exception('error file_get_contents');
         }
-        $this->setImageSizeData($imageSize);
-    }
-
-    private function setImageSizeData($imageSize)
-    {
-        $this->width = $imageSize[0];
-        $this->heigth = $imageSize[1];
-        $this->mime = $imageSize['mime'];
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mime = $finfo->buffer($this->imgBuffer);
+        if (!in_array($imageSize['mime'], $this->mimeValidate)) {
+            throw new \Exception('invalid mimetype');
+        }
+        unset($finfo);
     }
 
     public function setUploadDir($pathUploadDir = null)
@@ -294,8 +274,9 @@ class WpImage
     {
         $this->setFullPath();
         $r = ($this->isUrl === true)
-            ? file_put_contents($this->fullPath, file_get_contents($this->originPathName))
+            ? file_put_contents($this->fullPath, $this->imgBuffer)
             : copy($this->originPathName, $this->fullPath);
+        unset($this->imgBuffer);
         return ($r === false) ? false : true;
     }
 

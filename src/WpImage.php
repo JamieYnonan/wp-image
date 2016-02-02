@@ -305,7 +305,7 @@ class WpImage
             $this->fullPath
         );
         if ($this->attachmentMetadata === false) {
-            $data = ' attachmenteId: '. $this->attachmentId .' ,  fullPath: '. $this->fullPath
+            $data = ' attachmenteId: '. $this->attachmentId .' ,  fullPath: '. $this->fullPath;
             throw new \Exception('failed generate attachment metadata'. $data);
         }
         $this->updateAttachmentMetadata();

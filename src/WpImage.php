@@ -30,7 +30,7 @@ class WpImage
     protected $attachmentMetadata;
     protected $postId;
     protected $postMetaId;
-    protected $isThumnail = false;
+    protected $isThumbnail = false;
     private $imgBuffer;
 
     public function __construct($image, $validateMime = null, $sanitizeName = true)
@@ -161,11 +161,11 @@ class WpImage
     }
 
     /**
-     * @return isThumnail
+     * @return isThumbnail
      */
     public function getIsThumnail()
     {
-        return $this->isThumnail;
+        return $this->isThumbnail;
     }
 
     private function validateImage($validateMime)
@@ -292,7 +292,7 @@ class WpImage
     private function setPostId($postId)
     {
         $postId = (int)$postId;
-        if (!$postId > 0) {
+        if ($postId == 0) {
             throw new \Exception('postId invalid');
         }
         $this->postId = $postId;
@@ -305,7 +305,8 @@ class WpImage
             $this->fullPath
         );
         if ($this->attachmentMetadata === false) {
-            throw new \Exception('failed generate attachment metadata');
+            $data = ' attachmenteId: '. $this->attachmentId .' ,  fullPath: '. $this->fullPath
+            throw new \Exception('failed generate attachment metadata'. $data);
         }
         $this->updateAttachmentMetadata();
     }

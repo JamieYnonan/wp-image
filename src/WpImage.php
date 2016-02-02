@@ -229,6 +229,7 @@ class WpImage
         if (!in_array($mime, $this->mimeValidate)) {
             throw new \Exception('invalid mimetype');
         }
+        $this->mime = $mime;
         unset($finfo);
     }
 
@@ -318,10 +319,6 @@ class WpImage
             $this->attachmentMetadata
         );
         if ($r === false) {
-            $data = ' attachmentId : '. $this->attachmentId;
-            foreach ($attachmentMetadata as $k => $v) {
-            $data .= ' key: '. $k .' - value : '. $v. ' -- ';
-        }
             throw new \Exception('failed update attachment metadata'. $data);
         }
     }

@@ -218,9 +218,19 @@ class WpImage
         $this->originPathName = $this->img->getPathname();
     }
 
+    private function getContents($url, $v = 0)
+    {
+        $content = file_get_contents($url);
+        if (empty($content) && $v < 2) {
+            $v = $v+1;
+            $content = $this->getContents($url, $v);
+        }
+        return $content;
+    }
+
     private function validateMimeType()
     {
-        $this->imgBuffer = file_get_contents($this->originPathName);
+        $this->imgBuffer = $this->getContents($this->originPathName);
         if ($this->imgBuffer === false) {
             throw new \Exception('error file_get_contents');
         }
